@@ -4,6 +4,7 @@
 - how to execute tests in parallel since only one branch can be active at a time
 - how to organise and setup scenarion, and not to overcomplicate it
 - subprocess cannot handle quoted command parts
+- nested git conflicts
 
 ## Installation
 
