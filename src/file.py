@@ -4,12 +4,12 @@ from hashlib import md5
 class File:
     def __init__(self, path):
         self.path = path
-        self.hash = self._get_file_hash(path)
+        self._hash = None
 
-    @staticmethod
-    def _get_file_hash(file_path):
+    @property
+    def hash(self):
         md5_obj = md5()
-        with open(file_path, "rb") as f:
+        with open(self.path, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 md5_obj.update(chunk)
 
@@ -38,10 +38,9 @@ class File:
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            # original_file_hash = self._get_file_hash(self.path)
-            # comparing_file_hash = self._get_file_hash(other.path)
-            # return original_file_hash == comparing_file_hash
-
-            return self.hash == self._get_file_hash(other.path)
+            return self.hash == other.hash
 
         raise TypeError("Both sides of equation must be of type File")
+
+    def __repr__(self):
+        return self.hash
