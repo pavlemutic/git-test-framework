@@ -4,6 +4,7 @@ from hashlib import md5
 class File:
     def __init__(self, path):
         self.path = path
+        self.hash = self._get_file_hash(path)
 
     @staticmethod
     def _get_file_hash(file_path):
@@ -35,15 +36,12 @@ class File:
         with open(self.path, "w") as fp:
             fp.write(text + "\n")
 
-    def is_equal(self, comparable_file):
-        original_file_hash = self._get_file_hash(self.path)
-        comparing_file_hash = self._get_file_hash(comparable_file.path)
-        return original_file_hash == comparing_file_hash
-
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            original_file_hash = self._get_file_hash(self.path)
-            comparing_file_hash = self._get_file_hash(other.path)
-            return original_file_hash == comparing_file_hash
+            # original_file_hash = self._get_file_hash(self.path)
+            # comparing_file_hash = self._get_file_hash(other.path)
+            # return original_file_hash == comparing_file_hash
+
+            return self.hash == self._get_file_hash(other.path)
 
         raise TypeError("Both sides of equation must be of type File")

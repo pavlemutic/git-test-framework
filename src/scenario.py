@@ -42,9 +42,6 @@ class Scenario:
     def get_file(self, name):
         return self._files.get(name)
 
-    def add_expected_file(self, file_name):
-        self._expected_files[file_name] = File(expected_files_path / file_name)
-
     @staticmethod
     def get_expected_file(file_name):
         return File(expected_files_path / file_name)
@@ -64,3 +61,11 @@ class Scenario:
             f"Git command '{command}' failed with status code '{result.returncode}'.\n\n"
             f"Git output:\n{result.stderr}"
         )
+
+    def get_heads_ref(self, branch, remote=False):
+        if remote:
+            with open(self.scenario_path / "repo.git" / "refs" / "heads" / branch, "r") as heads_file:
+                return heads_file.readline()
+
+        with open(self.scenario_local_path / ".git" / "refs" / "heads" / branch, "r") as heads_file:
+            return heads_file.readline()
