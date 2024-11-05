@@ -24,6 +24,15 @@ def test_checkout():
     assert response.contains('On branch checkout-branch')
     assert response.contains('nothing to commit, working tree clean')
 
+    scenario.run("git checkout main")
+    response = scenario.run("git branch")
+    assert response.contains('* main')
+    assert response.contains('checkout-branch')
+
+    response = scenario.run("git status")
+    assert response.contains('On branch main')
+    assert response.contains('nothing to commit, working tree clean')
+
 
 def test_merge():
     scenario = Scenario("branch.merge")
@@ -31,8 +40,8 @@ def test_merge():
     scenario.add_file(src_file_name="five_lines", dest_file_name="merge_file")
     scenario.run("git add merge_file")
     scenario.run('git commit -m "Add merge_file"')
-
     scenario.run("git branch branch-to-merge")
+
     scenario.get_file("merge_file").append_text("new, sixth line")
     scenario.run("git add merge_file")
     scenario.run('git commit -m "Add sixth line to merge_file"')

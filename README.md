@@ -6,6 +6,13 @@
 - subprocess cannot handle quoted command parts
 - nested git conflicts
 
+## TODO
+- logs
+- parallel
+- docker
+- improve readme
+- next steps strategy
+
 ## Installation
 
 ```shell
