@@ -2,16 +2,10 @@
 
 ## Challenges 
 - how to execute tests in parallel since only one branch can be active at a time
-- how to organise and setup scenarion, and not to overcomplicate it
+- how to organise and setup scenario, and not to overcomplicate it
 - subprocess cannot handle quoted command parts
 - nested git conflicts
 
-## TODO
-- logs
-- parallel
-- docker
-- improve readme
-- next steps strategy
 
 ## Installation
 
@@ -19,11 +13,23 @@
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+bash scripts/create_init_repo.sh
 ```
 
 ## Run
 ```shell
 pytest tests -v
+```
+
+## Docker
+Build image:
+```shell
+docker build -t gtf-docker:1.0.0 .
+```
+
+Run tests:
+```shell
+docker run --rm gtf-docker:1.0.0 pytest -v
 ```
 
 ## Steps to create init repo
