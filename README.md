@@ -15,17 +15,17 @@ pip install -r requirements.txt
 ```
 
 ## Structure
-- src: helper and other functions and classes
-- tests: test case files
-- scenarios: prepared files for scenarios, each test one scenario folder, expected files for comparison
 - output: where testing is happening, files from scenarios being copied, analiser checks expected outputs
+- results: results JSON file
+- scenario artefacts: prepared files for scenarios, init git repos
+- scripts: helper independent scripts
+- src: framework source code
+- tests: test case files
 
 ## Workflow
 - global setup: prepare files on local machine for testing
-    - remove everything
-    - create folder structure (output, client, server)
+    - remove everything from output directory
     - install git (docker)
-    - initiate shared git repo (tests are executed on the same branch)
 - git initiator: creates independent client and/or server, for each test where needed
 - scenario creator: before each test, creates a scenario for it (copy files, create branches)
 - request runner: function that sends git commands through subprocess

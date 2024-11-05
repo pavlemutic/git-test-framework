@@ -9,5 +9,5 @@
 	url = /Users/pavlemutic/repos/git-test-framework/scenarios/init_repo/repo.git
 	fetch = +refs/heads/*:refs/remotes/origin/*
 [branch "main"]
-	remote = origin
+	remote = ../repo.git
 	merge = refs/heads/main

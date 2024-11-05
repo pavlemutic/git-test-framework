@@ -1,5 +1,11 @@
 from src.scenario import Scenario
-from src.file import File
+
 
 def test_create():
-    pass
+    scenario = Scenario(name="branch.create")
+    scenario.init()
+
+    response = scenario.run("git branch new-branch")
+    print(response.output)
+    response = scenario.run("git branch")
+    print(response.output)
