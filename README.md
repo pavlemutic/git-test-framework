@@ -19,6 +19,33 @@ pip install -r requirements.txt
 pytest tests -v
 ```
 
+## Steps to create init repo
+```shell
+bash scripts/create_init_repo.sh
+```
+
+...or manually:
+```shell
+mkdir scenario_artefacts/init_repo
+cd scenario_artefacts/init_repo
+mkdir repo.git
+mkdir local
+git init repo.git --bare
+
+git clone repo.git local
+
+cd local
+git config user.name "Pavle Mutic"
+git config user.email "mail@pavlemutic.com"
+
+echo "# Test Git Repo\n" >> README.md
+git add README.md
+git commit -m "Initial commit"
+git push -u ../repo.git main
+
+mv .git .git-nogit
+```
+
 ## Structure
 - output: where testing is happening, files from scenarios being copied, analiser checks expected outputs
 - results: results JSON file

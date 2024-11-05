@@ -4,7 +4,7 @@ from shutil import copytree, copyfile
 
 from src.response import Response
 from src.file import File
-from src.config import scenario_artefacts_path, output_path
+from src.config import init_repo_path, files_path, expected_files_path, output_path
 from src.exceptions import GitExecutionError
 
 
@@ -13,12 +13,13 @@ class Scenario:
         self.name = name
         self._remote = remote
 
-        self.local_repo_path = scenario_artefacts_path / "init_repo" / "local"
-        self.remote_repo_path = scenario_artefacts_path / "init_repo" / "repo.git"
+        self.local_repo_path = init_repo_path / "local"
+        self.remote_repo_path = init_repo_path / "repo.git"
         self.scenario_path = None
         self.scenario_local_path = None
 
-        self.files = {}
+        self._files = {}
+        self._expected_files = {}
 
     def init(self):
         self.scenario_path = output_path.joinpath(*(self.name.split(".")))
@@ -26,17 +27,27 @@ class Scenario:
 
         self.scenario_local_path = self.scenario_path / "local"
         copytree(self.local_repo_path, self.scenario_local_path)
-        (self.scenario_local_path / ".git.tmp").rename(self.scenario_local_path / ".git")
+        (self.scenario_local_path / ".git-nogit").rename(self.scenario_local_path / ".git")
 
         if self._remote:
             copytree(self.remote_repo_path, self.scenario_path / "repo.git")
 
     def add_file(self, src_file_name, dest_file_name):
         copyfile(
-            src=scenario_artefacts_path / "files" / src_file_name,
+            src=files_path / src_file_name,
             dst=self.scenario_local_path / dest_file_name
         )
-        self.files[dest_file_name] = File(self.scenario_local_path / dest_file_name)
+        self._files[dest_file_name] = File(self.scenario_local_path / dest_file_name)
+
+    def get_file(self, name):
+        return self._files.get(name)
+
+    def add_expected_file(self, file_name):
+        self._expected_files[file_name] = File(expected_files_path / file_name)
+
+    @staticmethod
+    def get_expected_file(file_name):
+        return File(expected_files_path / file_name)
 
     def run(self, command):
         command_list = findall(r'"[^"]*"|\S+', command)

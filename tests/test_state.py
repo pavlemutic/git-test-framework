@@ -17,7 +17,7 @@ def test_diff():
 
     scenario.run("git add diff_file")
     scenario.run('git commit -m "Add diff_file"')
-    scenario.files.get("diff_file").append_text("new diff text\n")
+    scenario.get_file("diff_file").append_text("new diff text\n")
 
     response = scenario.run("git diff")
     assert response.contains("diff --git a/diff_file b/diff_file")
