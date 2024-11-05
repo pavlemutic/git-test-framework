@@ -13,7 +13,7 @@ class Scenario:
         self.name = name
         self._remote = remote
 
-        self.local_repo_path = scenario_artefacts_path / "init_repo" / "local" / ".git.tmp"
+        self.local_repo_path = scenario_artefacts_path / "init_repo" / "local"
         self.remote_repo_path = scenario_artefacts_path / "init_repo" / "repo.git"
         self.scenario_path = output_path
         self.scenario_local_path = None
@@ -25,7 +25,8 @@ class Scenario:
         self.scenario_path.mkdir(parents=True, exist_ok=False)
 
         self.scenario_local_path = self.scenario_path / "local"
-        copytree(self.local_repo_path, self.scenario_local_path / ".git")
+        copytree(self.local_repo_path, self.scenario_local_path)
+        (self.scenario_local_path / ".git.tmp").rename(self.scenario_local_path / ".git")
 
         if self._remote:
             copytree(self.remote_repo_path, self.scenario_path / "repo.git")
