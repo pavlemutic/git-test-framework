@@ -14,6 +14,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Run
+```shell
+pytest tests -v
+```
+
 ## Structure
 - output: where testing is happening, files from scenarios being copied, analiser checks expected outputs
 - results: results JSON file

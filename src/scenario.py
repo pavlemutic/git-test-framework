@@ -15,13 +15,13 @@ class Scenario:
 
         self.local_repo_path = scenario_artefacts_path / "init_repo" / "local"
         self.remote_repo_path = scenario_artefacts_path / "init_repo" / "repo.git"
-        self.scenario_path = output_path
+        self.scenario_path = None
         self.scenario_local_path = None
 
         self.files = {}
 
     def init(self):
-        self.scenario_path = self.scenario_path.joinpath(*(self.name.split(".")))
+        self.scenario_path = output_path.joinpath(*(self.name.split(".")))
         self.scenario_path.mkdir(parents=True, exist_ok=False)
 
         self.scenario_local_path = self.scenario_path / "local"
