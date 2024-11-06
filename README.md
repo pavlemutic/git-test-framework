@@ -1,7 +1,23 @@
 # Git Test Framework
 
-## Installation
+Automated test framework for testing Git tool. Written in Python, 
+uses PyTest as a test runner. As this is a demo project, test coverage 
+is restricted to very few and basic Git functionalities.
 
+Framework is designed to be able to cover most of the Git functionalities. 
+It is also created to be easy extendable to support Git functionalities that 
+might not be capable now.
+
+Tests can be executed in Docker container, making it suitable for CI/CD integration.
+
+- [Usage](#usage)
+  - [Install](#install)
+  - [Run tests](#run-tests)
+  - [Before PUSH](#before-push)
+- [License](#license)
+
+## Usage
+### Install
 ```shell
 python -m venv .venv
 source .venv/bin/activate
@@ -9,37 +25,40 @@ pip install -r requirements.txt
 bash scripts/create_init_repo.sh
 ```
 
-## Run tests
+### Run tests
 ```shell
 pytest
 ```
 
-## Before PUSH
+### Before PUSH
 ```shell
 pytest  # make sure your tests are not failing
 pytest unit  # make sure unit tests are not failing
-black . -l 120  # make sure your code looks consistent 
+black .  # make sure your code looks consistent 
 
 docker build -t gtf-docker:latest .  # build docker image
 docker run --rm gtf-docker:latest pytest  # run tests from docker, making sure they work there, as well
 ```
 
+## License
+[MIT License](LICENSE)
 
-## Challenges 
+## Development notes
+### Challenges 
 - how to execute tests in parallel since only one branch can be active at a time
 - how to organise and setup scenario, and not to overcomplicate it
 - subprocess cannot handle quoted command parts
 - nested git conflicts
 
-## Structure
-- output: where testing is happening, files from scenarios being copied, analiser checks expected outputs
-- results: results JSON file
-- scenario artefacts: prepared files for scenarios, init git repos
-- scripts: helper independent scripts
-- src: framework source code
-- tests: test case files
+### Functionalities
+- init: git init, git init --bare
+- branch management: create, delete, checkout, switch (remote), merge, rebase
+- file management: add, restore, restore staged, commit
+- remote management: fetch, pull, push, clone, submodule
+- state mamagement: ststus, diff, log
+- config management: several config options
 
-## Workflow
+### Workflow
 - global setup: prepare files on local machine for testing
     - remove everything from output directory
     - install git (docker)
@@ -54,34 +73,3 @@ docker run --rm gtf-docker:latest pytest  # run tests from docker, making sure t
     - commit history is correct
     - etc
 - error reporter: reports the failed result in human-readable mode
-
-## Functionalities
-- init: git init, git init --bare
-- branch management: create, delete, checkout, switch (remote), merge, rebase
-- file management: add, restore, restore staged, commit
-- remote management: fetch, pull, push, clone, submodule
-- state mamagement: ststus, diff, log
-- config management: several config options
-
-## Test Types
-- client tests: small independent tests, testing only one functionality
-- integration tests: testing bigger scenario (merging several branches, merge conflicts)
-
-## Classes
-- Response: parses response from the command line
-    - status (0: success, 1+: error)
-    - output text (parsed console text)
-    - function contains (if response text contains string)
-    - function get branch name (git helper class?)
-    - function get last n commits (git helper class?)
-    - function get status (git helper class?)
-
-- Scenario: holds test scenario data
-    - scenario folder path
-    - expected result files path
-
-- File: functions to work with files
-    - init: path to file
-    - function append_text
-    - function rewrite_text
-    - function is_equal - path to another file (output file as expected)
