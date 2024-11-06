@@ -37,10 +37,7 @@ class Scenario:
 
     def add_file(self, file_name, scenario_file_name):
         log.debug(f"Adding '{file_name}' file to the scenario, as '{scenario_file_name}'")
-        copyfile(
-            src=files_path / file_name,
-            dst=self.scenario_local_path / scenario_file_name
-        )
+        copyfile(src=files_path / file_name, dst=self.scenario_local_path / scenario_file_name)
         self._files[scenario_file_name] = File(self.scenario_local_path / scenario_file_name)
 
     def get_file(self, name):
@@ -55,12 +52,7 @@ class Scenario:
     def run(self, command):
         log.info(f"Running command '{command}'")
         command_list = findall(r'"[^"]*"|\S+', command)
-        result = subprocess.run(
-            command_list,
-            cwd=self.scenario_local_path,
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(command_list, cwd=self.scenario_local_path, capture_output=True, text=True)
         if result.returncode == 0 or result.returncode in error_code_exceptions.keys():
             return Response(result=result)
 
@@ -70,8 +62,11 @@ class Scenario:
         )
 
     def get_heads_ref(self, branch, remote=False):
-        path = self.scenario_path / "repo.git" / "refs" / "heads" / branch \
-            if remote else self.scenario_local_path / ".git" / "refs" / "heads" / branch
+        path = (
+            self.scenario_path / "repo.git" / "refs" / "heads" / branch
+            if remote
+            else self.scenario_local_path / ".git" / "refs" / "heads" / branch
+        )
 
         with open(path, "r") as heads_file:
             ref = heads_file.readline().strip()

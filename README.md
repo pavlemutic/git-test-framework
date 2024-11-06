@@ -1,12 +1,5 @@
 # Git Test Framework
 
-## Challenges 
-- how to execute tests in parallel since only one branch can be active at a time
-- how to organise and setup scenario, and not to overcomplicate it
-- subprocess cannot handle quoted command parts
-- nested git conflicts
-
-
 ## Installation
 
 ```shell
@@ -16,26 +9,27 @@ pip install -r requirements.txt
 bash scripts/create_init_repo.sh
 ```
 
-## Run
+## Run tests
 ```shell
 pytest
 ```
 
-## Docker
-Build image:
+## Before PUSH
 ```shell
-docker build -t gtf-docker:latest .
+pytest  # make sure your tests are not failing
+pytest unit  # make sure unit tests are not failing
+black . -l 120  # make sure your code looks consistent 
+
+docker build -t gtf-docker:latest .  # build docker image
+docker run --rm gtf-docker:latest pytest  # run tests from docker, making sure they work there, as well
 ```
 
-Run tests:
-```shell
-docker run --rm gtf-docker:latest pytest
-```
 
-## Unit
-```shell
-pytest unit
-```
+## Challenges 
+- how to execute tests in parallel since only one branch can be active at a time
+- how to organise and setup scenario, and not to overcomplicate it
+- subprocess cannot handle quoted command parts
+- nested git conflicts
 
 ## Structure
 - output: where testing is happening, files from scenarios being copied, analiser checks expected outputs

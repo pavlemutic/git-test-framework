@@ -12,9 +12,13 @@
 - Parallel execution
 - Test for merge conflicts
 - Git error codes exceptions
+- Black lint
+- pyproject.toml for pytest and black config
 ### Changed
 - Response has() now differs regex strings from non-regex
 - Merge and diff test according to above change
+### Removed
+- pytest.ini, replaced with pyproject.toml
 
 ## [Version 1.1.0] - 2024-11-06
 ### Added

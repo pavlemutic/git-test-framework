@@ -14,10 +14,10 @@ def test_push():
 
     assert scenario.get_heads_ref("main") != scenario.get_heads_ref("main", remote=True)
 
-    response = scenario.run('git push -u ../repo.git main')
+    response = scenario.run("git push -u ../repo.git main")
     assert response.contains("branch 'main' set up to track '../repo.git/main'.")
 
-    response = scenario.run('git status')
+    response = scenario.run("git status")
     assert response.contains("On branch main")
     assert response.contains("nothing to commit, working tree clean")
 
@@ -46,22 +46,21 @@ def test_pull():
 
     scenario.run("git add pull_file")
     scenario.run('git commit -m "Add pull_file"')
-    scenario.run('git push -u ../repo.git pull-branch')
-    scenario.run('git checkout main')
-    response = scenario.run('ls -la')
-    assert response.has(on_line=2, text='.')
-    assert response.has(on_line=3, text='..')
-    assert response.has(on_line=4, text='.git')
-    assert response.has(on_line=5, text='README.md')
+    scenario.run("git push -u ../repo.git pull-branch")
+    scenario.run("git checkout main")
+    response = scenario.run("ls -la")
+    assert response.has(on_line=2, text=".")
+    assert response.has(on_line=3, text="..")
+    assert response.has(on_line=4, text=".git")
+    assert response.has(on_line=5, text="README.md")
 
-    scenario.run('git pull ../repo.git pull-branch')
-    response = scenario.run('ls -la')
-    assert response.has(on_line=2, text='.')
-    assert response.has(on_line=3, text='..')
-    assert response.has(on_line=4, text='.git')
-    assert response.has(on_line=5, text='README.md')
-    assert response.has(on_line=6, text='pull_file')
+    scenario.run("git pull ../repo.git pull-branch")
+    response = scenario.run("ls -la")
+    assert response.has(on_line=2, text=".")
+    assert response.has(on_line=3, text="..")
+    assert response.has(on_line=4, text=".git")
+    assert response.has(on_line=5, text="README.md")
+    assert response.has(on_line=6, text="pull_file")
 
     pulled_file = File(scenario.scenario_local_path / "pull_file")
     assert scenario.get_file("pull_file") == pulled_file
-

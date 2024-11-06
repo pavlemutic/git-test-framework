@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = ["tests"]
+minversion = "8.3"
+addopts = "-v"
+json_report = "results/report.json"
+
+[tool.black]
+line-length = 120

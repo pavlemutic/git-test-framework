@@ -1,3 +1,15 @@
+# dependencies
+click==8.1.7
+execnet==2.1.1
+iniconfig==2.0.0
+mypy-extensions==1.0.0
+packaging==24.1
+pathspec==0.12.1
+platformdirs==4.3.6
+pluggy==1.5.0
+
+# core
 pytest==8.3.3
 pytest-json==0.4.0
 pytest-xdist==3.6.1
+black==24.10.0
