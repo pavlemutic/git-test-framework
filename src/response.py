@@ -43,4 +43,4 @@ class Response:
         )
 
     def echo(self):
-        print(self.output)
+        print(f"\n>> response:\n{self.output}")

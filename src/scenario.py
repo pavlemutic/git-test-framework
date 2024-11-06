@@ -1,4 +1,5 @@
 import subprocess
+from os import listdir
 from re import findall
 from shutil import copytree, copyfile
 
@@ -72,3 +73,8 @@ class Scenario:
             ref = heads_file.readline().strip()
             log.debug(f"Getting {'remote' if remote else 'local'} heads ref: {ref}")
             return ref
+
+    def list_folder_items(self, relative_path=None):
+        path = self.scenario_path / relative_path if relative_path else self.scenario_path
+        return listdir(path)
+

@@ -48,19 +48,13 @@ def test_pull():
     scenario.run('git commit -m "Add pull_file"')
     scenario.run("git push -u ../repo.git pull-branch")
     scenario.run("git checkout main")
-    response = scenario.run("ls -la")
-    assert response.has(on_line=2, text=".")
-    assert response.has(on_line=3, text="..")
-    assert response.has(on_line=4, text=".git")
-    assert response.has(on_line=5, text="README.md")
+
+    folder_items = scenario.list_folder_items("local")
+    assert "pull_file" not in folder_items
 
     scenario.run("git pull ../repo.git pull-branch")
-    response = scenario.run("ls -la")
-    assert response.has(on_line=2, text=".")
-    assert response.has(on_line=3, text="..")
-    assert response.has(on_line=4, text=".git")
-    assert response.has(on_line=5, text="README.md")
-    assert response.has(on_line=6, text="pull_file")
+    folder_items = scenario.list_folder_items("local")
+    assert "pull_file" in folder_items
 
     pulled_file = File(scenario.scenario_local_path / "pull_file")
     assert scenario.get_file("pull_file") == pulled_file
