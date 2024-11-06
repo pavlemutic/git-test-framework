@@ -20,3 +20,9 @@ log_folder_path = root_path / "log"
 log_path = root_path / "log" / "gtf.log"
 
 log_folder_path.mkdir(exist_ok=True)
+
+
+# GIT
+error_code_exceptions = {
+    1: "merge conflict"
+}

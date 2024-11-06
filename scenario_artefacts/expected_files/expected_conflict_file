@@ -1,0 +1,9 @@
+first line
+second line
+
+<<<<<<< HEAD
+new fourth line from 'main'
+=======
+new fourth line from 'conflict_branch'
+>>>>>>> conflict_branch
+fifth line

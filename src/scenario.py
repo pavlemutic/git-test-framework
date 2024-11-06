@@ -4,7 +4,7 @@ from shutil import copytree, copyfile
 
 from src.response import Response
 from src.file import File
-from src.config import init_repo_path, files_path, expected_files_path, output_path
+from src.config import init_repo_path, files_path, expected_files_path, output_path, error_code_exceptions
 from src.exceptions import GitExecutionError
 from src.logger import log
 
@@ -13,14 +13,12 @@ class Scenario:
     def __init__(self, name, remote=False):
         self.name = name
         self._remote = remote
+        self._files = {}
 
         self.local_repo_path = init_repo_path / "local"
         self.remote_repo_path = init_repo_path / "repo.git"
         self.scenario_path = None
         self.scenario_local_path = None
-
-        self._files = {}
-        self._expected_files = {}
 
         log.name = name
 
@@ -63,7 +61,7 @@ class Scenario:
             capture_output=True,
             text=True
         )
-        if result.returncode == 0:
+        if result.returncode == 0 or result.returncode in error_code_exceptions.keys():
             return Response(result=result)
 
         raise GitExecutionError(

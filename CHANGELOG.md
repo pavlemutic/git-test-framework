@@ -1,13 +1,20 @@
 # CHANGELOG
 
 ## [Unreleased]
-- parallel execution
 - improve readme
-- scenario for merge conflicts
 - scenario for rebase
 - scenario for submodule
 - scenario for config update
 - next steps strategy
+
+## [Version 1.2.0] - 2024-11-06
+### Added
+- Parallel execution
+- Test for merge conflicts
+- Git error codes exceptions
+### Changed
+- Response has() now differs regex strings from non-regex
+- Merge and diff test according to above change
 
 ## [Version 1.1.0] - 2024-11-06
 ### Added

@@ -22,7 +22,7 @@ class Response:
             f"Response:\n\n{self.output}"
         )
 
-    def has(self, on_line, text):
+    def has(self, on_line, text, regex=False):
         if len(self.output_list) < on_line or on_line < 0:
             raise IndexError(
                 f"Requested line number '{on_line}' "
@@ -31,11 +31,19 @@ class Response:
 
         line = self.output_list[on_line - 1]
         log.debug(f"Asserting if response on line {on_line} '{line}' has text: '{text}'")
-        search_result = search(text, line)
-        if search_result:
-            return search_result
+
+        if regex:
+            search_result = search(text, line)
+            if search_result:
+                return search_result
+
+        elif text in line:
+            return True
 
         raise ResponseMismatchError(
             f"Line number '{on_line}': '{line}' doesn't match expected text: '{text}'.\n"
             f"Full response:\n\n{self.output}"
         )
+
+    def echo(self):
+        print(self.output)

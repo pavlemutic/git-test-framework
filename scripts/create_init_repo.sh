@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -rf scenario_artefacts/init_repo
 mkdir scenario_artefacts/init_repo
 cd scenario_artefacts/init_repo || { echo "'scenario_artefacts' dir might not exist"; exit 1; }
