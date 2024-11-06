@@ -6,6 +6,7 @@ from src.response import Response
 from src.file import File
 from src.config import init_repo_path, files_path, expected_files_path, output_path
 from src.exceptions import GitExecutionError
+from src.logger import log
 
 
 class Scenario:
@@ -21,9 +22,13 @@ class Scenario:
         self._files = {}
         self._expected_files = {}
 
+        log.name = name
+
     def init(self):
+        log.info(f"Initialising new scenario, setting 'local' {'and \'remote\' ' if self._remote else ''}git repo")
         self.scenario_path = output_path.joinpath(*(self.name.split(".")))
         self.scenario_path.mkdir(parents=True, exist_ok=False)
+        log.debug(f"Scenario path: '{self.scenario_path}'")
 
         self.scenario_local_path = self.scenario_path / "local"
         copytree(self.local_repo_path, self.scenario_local_path)
@@ -32,21 +37,25 @@ class Scenario:
         if self._remote:
             copytree(self.remote_repo_path, self.scenario_path / "repo.git")
 
-    def add_file(self, src_file_name, dest_file_name):
+    def add_file(self, file_name, scenario_file_name):
+        log.debug(f"Adding '{file_name}' file to the scenario, as '{scenario_file_name}'")
         copyfile(
-            src=files_path / src_file_name,
-            dst=self.scenario_local_path / dest_file_name
+            src=files_path / file_name,
+            dst=self.scenario_local_path / scenario_file_name
         )
-        self._files[dest_file_name] = File(self.scenario_local_path / dest_file_name)
+        self._files[scenario_file_name] = File(self.scenario_local_path / scenario_file_name)
 
     def get_file(self, name):
+        log.debug(f"Getting file '{name}' from scenario")
         return self._files.get(name)
 
     @staticmethod
     def get_expected_file(file_name):
+        log.debug(f"Getting expected file '{file_name}' from '{expected_files_path / file_name}'")
         return File(expected_files_path / file_name)
 
     def run(self, command):
+        log.info(f"Running command '{command}'")
         command_list = findall(r'"[^"]*"|\S+', command)
         result = subprocess.run(
             command_list,
@@ -63,9 +72,10 @@ class Scenario:
         )
 
     def get_heads_ref(self, branch, remote=False):
-        if remote:
-            with open(self.scenario_path / "repo.git" / "refs" / "heads" / branch, "r") as heads_file:
-                return heads_file.readline()
+        path = self.scenario_path / "repo.git" / "refs" / "heads" / branch \
+            if remote else self.scenario_local_path / ".git" / "refs" / "heads" / branch
 
-        with open(self.scenario_local_path / ".git" / "refs" / "heads" / branch, "r") as heads_file:
-            return heads_file.readline()
+        with open(path, "r") as heads_file:
+            ref = heads_file.readline().strip()
+            log.debug(f"Getting {'remote' if remote else 'local'} heads ref: {ref}")
+            return ref

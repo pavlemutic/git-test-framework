@@ -1,5 +1,6 @@
 from re import search
 
+from src.logger import log
 from src.exceptions import ResponseMismatchError
 
 
@@ -12,6 +13,7 @@ class Response:
         self.output_list = result.stdout.splitlines()
 
     def contains(self, text):
+        log.debug(f"Asserting if response contains text: '{text}'")
         if text in self.output:
             return True
 
@@ -28,6 +30,7 @@ class Response:
             )
 
         line = self.output_list[on_line - 1]
+        log.debug(f"Asserting if response on line {on_line} '{line}' has text: '{text}'")
         search_result = search(text, line)
         if search_result:
             return search_result

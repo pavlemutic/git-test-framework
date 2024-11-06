@@ -37,7 +37,7 @@ def test_checkout():
 def test_merge():
     scenario = Scenario("branch.merge")
     scenario.init()
-    scenario.add_file(src_file_name="five_lines", dest_file_name="merge_file")
+    scenario.add_file(file_name="five_lines", scenario_file_name="merge_file")
     scenario.run("git add merge_file")
     scenario.run('git commit -m "Add merge_file"')
     scenario.run("git branch branch-to-merge")

@@ -1,7 +1,6 @@
 # CHANGELOG
 
 ## [Unreleased]
-- logs
 - parallel execution
 - improve readme
 - scenario for merge conflicts
@@ -9,6 +8,10 @@
 - scenario for submodule
 - scenario for config update
 - next steps strategy
+
+## [Version 1.1.0] - 2024-11-06
+### Added
+- Logging
 
 ## [Version 1.0.0] - 2024-11-05
 ### Added

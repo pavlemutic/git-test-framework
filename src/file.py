@@ -1,8 +1,11 @@
 from hashlib import md5
 
+from src.logger import log
+
 
 class File:
     def __init__(self, path):
+        log.debug(f"New scenario file created on path '{path}'")
         self.path = path
 
     @property
@@ -15,10 +18,12 @@ class File:
         return md5_obj.hexdigest()
 
     def append_text(self, text):
+        log.debug(f"Appending '{text}' text on file '{self.path.name}'")
         with open(self.path, "a") as fp:
             fp.write(text + "\n")
 
     def replace_nth_line(self, text, line_num):
+        log.debug(f"Replacing line {line_num} with '{text}' text in file '{self.path.name}'")
         old_file = self.path.parent / f"{self.path.name}.old"
         self.path.rename(old_file)
 
@@ -31,12 +36,9 @@ class File:
                     out_file.write(line)
         old_file.unlink()
 
-    def override_text(self, text):
-        with open(self.path, "w") as fp:
-            fp.write(text + "\n")
-
     def __eq__(self, other):
         if isinstance(other, self.__class__):
+            log.debug(f"Comparing files '{self.path.name}' vs '{other.path.name}'")
             return self.hash == other.hash
 
         raise TypeError("Both sides of equation must be of type File")

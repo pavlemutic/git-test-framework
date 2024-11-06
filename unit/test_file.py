@@ -34,11 +34,6 @@ def test_replace_nth_line(temp_file):
     assert lines[2] == "Line 3"
 
 
-def test_override_text(temp_file):
-    temp_file.override_text("Overwritten content")
-    assert temp_file.path.read_text() == "Overwritten content\n"
-
-
 def test_equality_same_content(tmp_path):
     file1 = tmp_path / "file1.txt"
     file2 = tmp_path / "file2.txt"

@@ -18,45 +18,23 @@ bash scripts/create_init_repo.sh
 
 ## Run
 ```shell
-pytest tests -v
+pytest
 ```
 
 ## Docker
 Build image:
 ```shell
-docker build -t gtf-docker:1.0.0 .
+docker build -t gtf-docker:latest .
 ```
 
 Run tests:
 ```shell
-docker run --rm gtf-docker:1.0.0 pytest -v
+docker run --rm gtf-docker:latest pytest
 ```
 
-## Steps to create init repo
+## Unit
 ```shell
-bash scripts/create_init_repo.sh
-```
-
-...or manually:
-```shell
-mkdir scenario_artefacts/init_repo
-cd scenario_artefacts/init_repo
-mkdir repo.git
-mkdir local
-git init repo.git --bare
-
-git clone repo.git local
-
-cd local
-git config user.name "Pavle Mutic"
-git config user.email "mail@pavlemutic.com"
-
-echo "# Test Git Repo\n" >> README.md
-git add README.md
-git commit -m "Initial commit"
-git push -u ../repo.git main
-
-mv .git .git-nogit
+pytest unit
 ```
 
 ## Structure

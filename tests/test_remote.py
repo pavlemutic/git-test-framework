@@ -8,7 +8,7 @@ def test_push():
 
     assert scenario.get_heads_ref("main") == scenario.get_heads_ref("main", remote=True)
 
-    scenario.add_file(src_file_name="five_lines", dest_file_name="push_file")
+    scenario.add_file(file_name="five_lines", scenario_file_name="push_file")
     scenario.run("git add push_file")
     scenario.run('git commit -m "Add push_file"')
 
@@ -42,7 +42,7 @@ def test_pull():
     scenario.init()
 
     scenario.run("git checkout -b pull-branch")
-    scenario.add_file(src_file_name="five_lines", dest_file_name="pull_file")
+    scenario.add_file(file_name="five_lines", scenario_file_name="pull_file")
 
     scenario.run("git add pull_file")
     scenario.run('git commit -m "Add pull_file"')
