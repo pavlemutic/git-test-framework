@@ -1,61 +1,65 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from src.file import File
-from src.response import Response
-from src.config import output_path, files_path, expected_files_path
-from src.exceptions import GitExecutionError
 from src.scenario import Scenario
+from src.repo import Repo
+
 
 
 @pytest.fixture
-def scenario():
-    return Scenario(name="test.scenario")
+@patch("pathlib.Path.mkdir")
+def scenario(mock_mkdir):
+    return Scenario(name="test_scenario")
 
 
-@patch("src.scenario.copyfile")
-def test_add_file(mock_copyfile, scenario):
-    scenario.local_path = output_path / "test_scenario" / "local"
-    scenario.add_file("source.txt", "dest.txt")
-    mock_copyfile.assert_called_once_with(src=files_path / "source.txt", dst=scenario.local_path / "dest.txt")
-    assert "dest.txt" in scenario._files
-    assert isinstance(scenario._files["dest.txt"], File)
+@patch("pathlib.Path.mkdir")
+@patch("src.repo.Repo.run")
+@patch("src.repo.Repo.setup")
+def test_init_local_repo(mock_setup, mock_run, mock_mkdir):
+    scenario = Scenario(name="test_scenario")
+    repo = scenario.init_local_repo(repo_name="local_repo_name")
+    mock_run.assert_called_once_with("git init")
+    mock_setup.assert_called_once()
+
+    assert scenario.local_repos["local_repo_name"] == repo
+    assert isinstance(repo, Repo)
 
 
-def test_get_file(scenario):
-    file_mock = MagicMock(spec=File)
-    scenario._files["test.txt"] = file_mock
-    assert scenario.get_file("test.txt") == file_mock
-    assert scenario.get_file("nonexistent.txt") is None
+@patch("pathlib.Path.mkdir")
+@patch("src.repo.Repo.run")
+@patch("src.repo.Repo.setup")
+def test_init_remote_repo(mock_setup, mock_run, mock_mkdir):
+    scenario = Scenario(name="test_scenario")
+    repo = scenario.init_remote_repo("remote_repo")
+    mock_run.assert_called_once_with("git init --bare")
+    mock_setup.assert_called_once()
+
+    assert scenario.remote_repos["remote_repo"] == repo
+    assert isinstance(repo, Repo)
 
 
-def test_get_expected_file():
-    file_name = "expected.txt"
-    expected_file = ScenarioOld.get_expected_file(file_name)
-    assert isinstance(expected_file, File)
-    assert expected_file.path == expected_files_path / file_name
+@patch("pathlib.Path.mkdir")
+@patch("src.repo.Repo.run")
+@patch("src.repo.Repo.setup")
+def test_clone_repo(mock_setup, mock_run, mock_mkdir):
+    scenario = Scenario(name="test_scenario")
+    mock_remote_repo = MagicMock(spec=Repo)
+    mock_remote_repo.path = "/fake/remote/repo/path"
+    scenario.remote_repos["remote_repo"] = mock_remote_repo
+
+    local_repo = scenario.clone_repo("remote_repo", "local_clone_repo")
+
+    expected_clone_command = f"git clone {mock_remote_repo.path} {local_repo.path}"
+    mock_run.assert_any_call(expected_clone_command)
+    mock_setup.assert_called_once()
+
+    assert "local_clone_repo" in scenario.local_repos
+    assert scenario.local_repos["local_clone_repo"] == local_repo
+    assert isinstance(local_repo, Repo)
 
 
-@patch("src.scenario.subprocess.run")
-def test_run_success(mock_run, scenario):
-    mock_run.return_value = MagicMock(returncode=0, stdout="Success output")
-    command = "git status"
-    response = scenario.run(command)
-    mock_run.assert_called_once_with(["git", "status"], cwd=scenario.local_path, capture_output=True, text=True)
-    assert isinstance(response, Response)
-
-
-@patch("src.scenario.subprocess.run")
-def test_run_failure(mock_run, scenario):
-    mock_run.return_value = MagicMock(returncode=2, stderr="Error output")
-    command = "git status"
-    with pytest.raises(GitExecutionError, match="Git command 'git status' failed with status code '2'"):
-        scenario.run(command)
-
-
-@patch("src.scenario.subprocess.run")
-def test_run_failure_exception(mock_run, scenario):
-    mock_run.return_value = MagicMock(returncode=1, stderr="Error output")
-    command = "git status"
-    response = scenario.run(command)
-    mock_run.assert_called_once_with(["git", "status"], cwd=scenario.local_path, capture_output=True, text=True)
-    assert isinstance(response, Response)
+@patch("src.scenario.listdir")
+def test_list_folder_items(mock_listdir, scenario):
+    mock_listdir.return_value = ["file1.txt", "file2.txt"]
+    folder_items = scenario.list_folder_items()
+    mock_listdir.assert_called_once_with(scenario.path)
+    assert folder_items == ["file1.txt", "file2.txt"]
