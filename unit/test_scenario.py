@@ -16,7 +16,7 @@ def scenario(mock_mkdir):
 def test_init_local_repo(mock_setup, mock_run, mock_mkdir):
     scenario = Scenario(name="test_scenario")
     repo = scenario.init_local_repo(repo_name="local_repo_name")
-    mock_run.assert_called_once_with("git init")
+    mock_run.assert_called_once_with("git init --initial-branch=main")
     mock_setup.assert_called_once()
 
     assert scenario.local_repos["local_repo_name"] == repo
