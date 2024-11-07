@@ -22,7 +22,6 @@ Tests can be executed in Docker container, making it suitable for CI/CD integrat
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-bash scripts/create_init_repo.sh
 ```
 
 ### Run tests
