@@ -1,80 +1,50 @@
-import subprocess
 from os import listdir
-from re import findall
-from shutil import copytree, copyfile
 
-from src.response import Response
-from src.file import File
-from src.config import init_repo_path, files_path, expected_files_path, output_path, error_code_exceptions
-from src.exceptions import GitExecutionError
+from src.repo import Repo
+from src.config import output_path
 from src.logger import log
 
 
 class Scenario:
-    def __init__(self, name, remote=False):
-        self.name = name
-        self._remote = remote
-        self._files = {}
-
-        self.local_repo_path = init_repo_path / "local"
-        self.remote_repo_path = init_repo_path / "repo.git"
-        self.scenario_path = None
-        self.scenario_local_path = None
-
+    def __init__(self, name):
         log.name = name
 
-    def init(self):
-        log.info(f"Initialising new scenario, setting 'local' {'and \'remote\' ' if self._remote else ''}git repo")
-        self.scenario_path = output_path.joinpath(*(self.name.split(".")))
-        self.scenario_path.mkdir(parents=True, exist_ok=False)
-        log.debug(f"Scenario path: '{self.scenario_path}'")
+        self.name = name
+        self.path = output_path.joinpath(*(name.split(".")))
+        self.path.mkdir(parents=True, exist_ok=False)
+        log.info(f"New scenario '{self.name}' created on path: '{self.path}'")
 
-        self.scenario_local_path = self.scenario_path / "local"
-        copytree(self.local_repo_path, self.scenario_local_path)
-        (self.scenario_local_path / ".git-nogit").rename(self.scenario_local_path / ".git")
+        self.local_repos = {}
+        self.remote_repos = {}
 
-        if self._remote:
-            copytree(self.remote_repo_path, self.scenario_path / "repo.git")
+    def init_local_repo(self, repo_name):
+        repo = Repo(name=repo_name, scenario_name=self.name, scenario_path=self.path)
+        repo.run("git init")
+        repo.setup()
+        self.local_repos[repo.name] = repo
+        return repo
 
-    def add_file(self, file_name, scenario_file_name):
-        log.debug(f"Adding '{file_name}' file to the scenario, as '{scenario_file_name}'")
-        copyfile(src=files_path / file_name, dst=self.scenario_local_path / scenario_file_name)
-        self._files[scenario_file_name] = File(self.scenario_local_path / scenario_file_name)
+    def init_remote_repo(self, repo_name):
+        repo = Repo(name=repo_name, scenario_name=self.name, scenario_path=self.path, is_remote=True)
+        repo.run("git init --bare")
+        repo.setup()
+        self.remote_repos[repo.name] = repo
+        return repo
 
-    def get_file(self, name):
-        log.debug(f"Getting file '{name}' from scenario")
-        return self._files.get(name)
+    def clone_repo(self, remote_repo_name, local_repo_name):
+        remote_repo = self.remote_repos.get(remote_repo_name)
+        local_repo = Repo(name=local_repo_name, scenario_name=self.name, scenario_path=self.path)
+        local_repo.run(f"git clone {remote_repo.path} {local_repo.path}")
+        local_repo.setup()
+        self.local_repos[local_repo.name] = local_repo
+        return local_repo
 
-    @staticmethod
-    def get_expected_file(file_name):
-        log.debug(f"Getting expected file '{file_name}' from '{expected_files_path / file_name}'")
-        return File(expected_files_path / file_name)
+    def list_folder_items(self, path=None):
+        if not path:
+            path = self.path
+        if isinstance(path, str):
+            path = self.path.joinpath(path)
 
-    def run(self, command):
-        log.info(f"Running command '{command}'")
-        command_list = findall(r'"[^"]*"|\S+', command)
-        result = subprocess.run(command_list, cwd=self.scenario_local_path, capture_output=True, text=True)
-        if result.returncode == 0 or result.returncode in error_code_exceptions.keys():
-            return Response(result=result)
-
-        raise GitExecutionError(
-            f"Git command '{command}' failed with status code '{result.returncode}'.\n\n"
-            f"Git output:\n{result.stderr}"
-        )
-
-    def get_heads_ref(self, branch, remote=False):
-        path = (
-            self.scenario_path / "repo.git" / "refs" / "heads" / branch
-            if remote
-            else self.scenario_local_path / ".git" / "refs" / "heads" / branch
-        )
-
-        with open(path, "r") as heads_file:
-            ref = heads_file.readline().strip()
-            log.debug(f"Getting {'remote' if remote else 'local'} heads ref: {ref}")
-            return ref
-
-    def list_folder_items(self, relative_path=None):
-        path = self.scenario_path / relative_path if relative_path else self.scenario_path
-        return listdir(path)
-
+        folder_items = listdir(path)
+        log.debug(f"Folder items on path '{path}': {folder_items}")
+        return folder_items

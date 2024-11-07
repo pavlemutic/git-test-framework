@@ -23,4 +23,6 @@ log_folder_path.mkdir(exist_ok=True)
 
 
 # GIT
+git_user_name = "Pavle Mutic"
+git_user_email = "mail@pavlemutic.com"
 error_code_exceptions = {1: "merge conflict"}

@@ -7,6 +7,14 @@
 - scenario for config update
 - next steps strategy
 
+## [Version 1.3.0] - 2024-11-06
+### Added
+- Repo class
+- Local and Remote init tests
+- Clone test
+### Changed
+- Moved main logic from Scenario to Repo
+
 ## [Version 1.2.0] - 2024-11-06
 ### Added
 - Parallel execution

@@ -1,27 +1,36 @@
 from src.scenario import Scenario
+from src.repo import Repo
 from src.file import File
 
 
+def test_clone():
+    scenario = Scenario("remote.clone")
+    remote_repo = scenario.init_remote_repo(repo_name="repo.git")
+    assert scenario.list_folder_items() == ["repo.git"]
+
+    local_repo = Repo(name="local", scenario_name=scenario.name, scenario_path=scenario.path)
+    local_repo.run(f"git clone {remote_repo.path} {local_repo.path}")
+
+    assert scenario.list_folder_items() == ["repo.git", "local"]
+    assert local_repo.list_folder_items() == [".git"]
+    assert local_repo.get_config_value("url") == str(remote_repo.path)
+
 def test_push():
-    scenario = Scenario(name="remote.push", remote=True)
-    scenario.init()
+    scenario = Scenario("remote.push")
+    remote_repo = scenario.init_remote_repo(repo_name="repo.git")
+    local_repo = scenario.clone_repo(remote_repo_name="repo.git", local_repo_name="local")
 
-    assert scenario.get_heads_ref("main") == scenario.get_heads_ref("main", remote=True)
+    local_repo.add_file(file_name="five_lines", repo_file_name="push_file")
+    local_repo.run("git add push_file")
+    local_repo.run('git commit -m "Add push_file"')
 
-    scenario.add_file(file_name="five_lines", scenario_file_name="push_file")
-    scenario.run("git add push_file")
-    scenario.run('git commit -m "Add push_file"')
+    response = local_repo.run("git push -u origin main")
+    assert response.contains("branch 'main' set up to track 'origin/main'.")
 
-    assert scenario.get_heads_ref("main") != scenario.get_heads_ref("main", remote=True)
-
-    response = scenario.run("git push -u ../repo.git main")
-    assert response.contains("branch 'main' set up to track '../repo.git/main'.")
-
-    response = scenario.run("git status")
+    response = local_repo.run("git status")
     assert response.contains("On branch main")
     assert response.contains("nothing to commit, working tree clean")
-
-    assert scenario.get_heads_ref("main") == scenario.get_heads_ref("main", remote=True)
+    assert local_repo.get_heads_ref("main") == remote_repo.get_heads_ref("main")
 
 
 # def test_fetch():
@@ -38,23 +47,24 @@ def test_push():
 
 
 def test_pull():
-    scenario = Scenario(name="remote.pull", remote=True)
-    scenario.init()
+    scenario = Scenario("remote.pull")
+    scenario.init_remote_repo(repo_name="repo.git")
+    local_repo = scenario.clone_repo(remote_repo_name="repo.git", local_repo_name="local")
 
-    scenario.run("git checkout -b pull-branch")
-    scenario.add_file(file_name="five_lines", scenario_file_name="pull_file")
+    local_repo.run("git checkout -b pull-branch")
+    local_repo.add_file(file_name="five_lines", repo_file_name="pull_file")
 
-    scenario.run("git add pull_file")
-    scenario.run('git commit -m "Add pull_file"')
-    scenario.run("git push -u ../repo.git pull-branch")
-    scenario.run("git checkout main")
+    local_repo.run("git add pull_file")
+    local_repo.run('git commit -m "Add pull_file"')
+    local_repo.run("git push -u origin pull-branch")
+    local_repo.run("git checkout main")
 
-    folder_items = scenario.list_folder_items("local")
+    folder_items = local_repo.list_folder_items()
     assert "pull_file" not in folder_items
 
-    scenario.run("git pull ../repo.git pull-branch")
-    folder_items = scenario.list_folder_items("local")
+    local_repo.run("git pull origin pull-branch")
+    folder_items = local_repo.list_folder_items()
     assert "pull_file" in folder_items
 
-    pulled_file = File(scenario.scenario_local_path / "pull_file")
-    assert scenario.get_file("pull_file") == pulled_file
+    pulled_file = File(local_repo.path / "pull_file")
+    assert local_repo.get_file("pull_file") == pulled_file
