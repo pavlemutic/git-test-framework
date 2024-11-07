@@ -14,6 +14,9 @@
 - Clone test
 ### Changed
 - Moved main logic from Scenario to Repo
+### Removed
+- init_repo folder with preinitialised local and remote repos
+- create_init_repo.sh as we don't need preinitialising repos anymore
 
 ## [Version 1.2.0] - 2024-11-06
 ### Added
