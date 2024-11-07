@@ -8,7 +8,9 @@ def test_init_local():
 
     repo = Repo(name="local", scenario_name=scenario.name, scenario_path=scenario.path)
     response = repo.run("git init")
-    assert response.contains("Initialized empty Git repository in /Users/pavlemutic/repos/git-test-framework/output/init/local/local/.git/")
+    assert response.contains(
+        "Initialized empty Git repository in /Users/pavlemutic/repos/git-test-framework/output/init/local/local/.git/"
+    )
 
     response = repo.run("git status")
     assert response.has(on_line=1, text="On branch main")
@@ -31,7 +33,9 @@ def test_init_remote():
 
     repo = Repo(name="repo.git", scenario_name=scenario.name, scenario_path=scenario.path, is_remote=True)
     response = repo.run("git init --bare")
-    assert response.contains("Initialized empty Git repository in /Users/pavlemutic/repos/git-test-framework/output/init/remote/repo.git/")
+    assert response.contains(
+        "Initialized empty Git repository in /Users/pavlemutic/repos/git-test-framework/output/init/remote/repo.git/"
+    )
 
     assert repo.get_config_value("bare") == "true"
 

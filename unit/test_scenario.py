@@ -40,9 +40,7 @@ def test_run_success(mock_run, scenario):
     mock_run.return_value = MagicMock(returncode=0, stdout="Success output")
     command = "git status"
     response = scenario.run(command)
-    mock_run.assert_called_once_with(
-        ["git", "status"], cwd=scenario.local_path, capture_output=True, text=True
-    )
+    mock_run.assert_called_once_with(["git", "status"], cwd=scenario.local_path, capture_output=True, text=True)
     assert isinstance(response, Response)
 
 
@@ -59,7 +57,5 @@ def test_run_failure_exception(mock_run, scenario):
     mock_run.return_value = MagicMock(returncode=1, stderr="Error output")
     command = "git status"
     response = scenario.run(command)
-    mock_run.assert_called_once_with(
-        ["git", "status"], cwd=scenario.local_path, capture_output=True, text=True
-    )
+    mock_run.assert_called_once_with(["git", "status"], cwd=scenario.local_path, capture_output=True, text=True)
     assert isinstance(response, Response)

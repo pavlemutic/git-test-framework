@@ -15,8 +15,8 @@ class Repo:
     def __init__(self, name, scenario_name, scenario_path, is_remote=False):
         log.name = f"{scenario_name}.{name}"
 
-        self.name=name
-        self.path= scenario_path / name
+        self.name = name
+        self.path = scenario_path / name
         self.path.mkdir(parents=True, exist_ok=False)
         log.info(f"Setting {'remote' if is_remote else 'local'} repo '{self.name}' on path: '{self.path}'")
 
@@ -46,7 +46,7 @@ class Repo:
             self.run(f"git config user.email '{git_user_email}'")
 
             self.add_file(file_name="README.md", repo_file_name="README.md")
-            self.run('git add README.md')
+            self.run("git add README.md")
             self.run('git commit -m "Initial commit"')
 
     def add_file(self, file_name, repo_file_name):
@@ -62,7 +62,7 @@ class Repo:
         path = self.path if self.is_remote else self.path / ".git"
         with open(path / "config") as fp:
             for line in fp.readlines():
-                re_sult = search(fr"^\s+{key} = (?P<value>.+)\n?", line)
+                re_sult = search(rf"^\s+{key} = (?P<value>.+)\n?", line)
                 if re_sult:
                     return re_sult.group("value")
 
@@ -73,9 +73,7 @@ class Repo:
 
     def get_heads_ref(self, branch):
         path = (
-            self.path / "refs" / "heads" / branch
-            if self.is_remote
-            else self.path / ".git" / "refs" / "heads" / branch
+            self.path / "refs" / "heads" / branch if self.is_remote else self.path / ".git" / "refs" / "heads" / branch
         )
 
         with open(path, "r") as heads_file:

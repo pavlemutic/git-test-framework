@@ -15,6 +15,7 @@ def test_clone():
     assert local_repo.list_folder_items() == [".git"]
     assert local_repo.get_config_value("url") == str(remote_repo.path)
 
+
 def test_push():
     scenario = Scenario("remote.push")
     remote_repo = scenario.init_remote_repo(repo_name="repo.git")
