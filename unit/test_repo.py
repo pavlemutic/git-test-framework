@@ -34,7 +34,7 @@ def test_run_success(mock_log, mock_run, repo):
     mock_result = MagicMock(returncode=0, stdout="Success", stderr="")
     mock_run.return_value = mock_result
 
-    response = repo.run('git status')
+    response = repo.run("git status")
     assert isinstance(response, Response)
     mock_log.info.assert_called_with("Running command 'git status'")
 
@@ -45,7 +45,7 @@ def test_run_git_execution_error(mock_run, repo):
     mock_run.return_value = mock_result
 
     with pytest.raises(GitExecutionError) as exc:
-        repo.run('git status')
+        repo.run("git status")
     assert "Git command 'git status' failed" in str(exc.value)
 
 

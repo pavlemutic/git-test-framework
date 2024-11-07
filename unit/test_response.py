@@ -33,7 +33,7 @@ def test_has_text_on_line_found(response):
 
 
 def test_has_text_on_line_found_regex(response):
-    match = response.has(1, "success", regex=True)
+    match = response.has(1, "success", is_regex=True)
     assert match is not None
     assert match.group() == "success"
 

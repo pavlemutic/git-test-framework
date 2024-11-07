@@ -16,6 +16,8 @@ output_path = root_path / "output"
 
 # LOG
 log_level = "DEBUG"
+rotation_file_size = 102400  # in bytes, 100KB
+backup_count = 10
 log_folder_path = root_path / "log"
 log_path = root_path / "log" / "gtf.log"
 

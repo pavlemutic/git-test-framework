@@ -12,5 +12,6 @@ COPY src /app/src
 COPY tests /app/tests
 COPY pyproject.toml /app/pyproject.toml
 COPY requirements.txt /app/requirements.txt
+COPY VERSION /app/VERSION
 
 RUN pip install --no-cache-dir -r requirements.txt

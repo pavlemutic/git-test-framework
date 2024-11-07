@@ -4,7 +4,6 @@ from src.scenario import Scenario
 from src.repo import Repo
 
 
-
 @pytest.fixture
 @patch("pathlib.Path.mkdir")
 def scenario(mock_mkdir):

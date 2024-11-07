@@ -1,19 +1,15 @@
 # CHANGELOG
 
 ## [Unreleased]
-- improve readme
-- scenario for rebase
-- scenario for submodule
-- scenario for config update
-- next steps strategy
 
 ## [Version 1.3.0] - 2024-11-06
 ### Added
 - Repo class
 - Local and Remote init tests
-- Clone test
+- Clone test, submodule test, fetch test
 ### Changed
 - Moved main logic from Scenario to Repo
+- Improved readme file with info about framework and test stratefy
 ### Removed
 - init_repo folder with preinitialised local and remote repos
 - create_init_repo.sh as we don't need preinitialising repos anymore

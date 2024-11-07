@@ -23,7 +23,7 @@ def test_diff():
 
     response = repo.run("git diff")
     assert response.has(on_line=1, text="diff --git a/diff_file b/diff_file")
-    assert response.has(on_line=2, text=r"index [0-9a-f]{7}..[0-9a-f]{7} 100644", regex=True)
+    assert response.has(on_line=2, text=r"index [0-9a-f]{7}..[0-9a-f]{7} 100644", is_regex=True)
     assert response.has(on_line=3, text="--- a/diff_file")
     assert response.has(on_line=4, text="+++ b/diff_file")
     assert response.has(on_line=5, text="@@ -1 +1,2 @@")

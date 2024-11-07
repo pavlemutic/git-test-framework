@@ -19,7 +19,7 @@ class Scenario:
 
     def init_local_repo(self, repo_name):
         repo = Repo(name=repo_name, scenario_name=self.name, scenario_path=self.path)
-        repo.run("git init")
+        repo.run("git init --initial-branch=main")
         repo.setup()
         self.local_repos[repo.name] = repo
         return repo

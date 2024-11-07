@@ -65,30 +65,38 @@ def test_merge():
 
     response = repo.run("git log")
     response.echo()
-    assert response.has(on_line=1, text=r"commit [0-9a-f]{40}", regex=True)
-    assert response.has(on_line=2, text=r"Merge: [0-9a-f]{7} [0-9a-f]{7}", regex=True)
+    assert response.has(on_line=1, text=r"commit [0-9a-f]{40}", is_regex=True)
+    assert response.has(on_line=2, text=r"Merge: [0-9a-f]{7} [0-9a-f]{7}", is_regex=True)
     assert response.has(on_line=3, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=4, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(on_line=4, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True)
     assert response.has(on_line=6, text="Merge branch 'branch-to-merge'")
 
-    assert response.has(on_line=8, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=8, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=9, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=10, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(
+        on_line=10, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True
+    )
     assert response.has(on_line=12, text='"Add sixth line to merge_file"')
 
-    assert response.has(on_line=14, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=14, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=15, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=16, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(
+        on_line=16, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True
+    )
     assert response.has(on_line=18, text='"Update second line in merge_file"')
 
-    assert response.has(on_line=20, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=20, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=21, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=22, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(
+        on_line=22, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True
+    )
     assert response.has(on_line=24, text='"Add merge_file"')
 
-    assert response.has(on_line=26, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=26, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=27, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=28, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(
+        on_line=28, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True
+    )
 
     assert response.has(on_line=30, text="Initial commit")
 
@@ -134,19 +142,21 @@ def test_merge_conflict():
     assert response.has(on_line=10, text='no changes added to commit (use "git add" and/or "git commit -a")')
 
     response = repo.run("git log")
-    assert response.has(on_line=1, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=1, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=2, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=3, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(on_line=3, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True)
     assert response.has(on_line=5, text='"Update conflict_file on 4th from main"')
 
-    assert response.has(on_line=7, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=7, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=8, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=9, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(on_line=9, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True)
     assert response.has(on_line=11, text='"Add conflict_file"')
 
-    assert response.has(on_line=13, text=r"commit [0-9a-f]{40}", regex=True)
+    assert response.has(on_line=13, text=r"commit [0-9a-f]{40}", is_regex=True)
     assert response.has(on_line=14, text="Author: Pavle <mail@pavlemutic.com>")
-    assert response.has(on_line=15, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", regex=True)
+    assert response.has(
+        on_line=15, text=r"Date:   \w{3} \w{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4} [+-]\d{4}", is_regex=True
+    )
     assert response.has(on_line=17, text="Initial commit")
 
     assert repo.get_file(file) == repo.get_expected_file(expected_conflict_file)

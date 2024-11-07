@@ -44,7 +44,7 @@ def test_fetch():
 
     local_repo.run("git add fetch_file")
     local_repo.run('git commit -m "Add fetch_file"')
-    local_repo.run('git push -u origin fetch-branch')
+    local_repo.run("git push -u origin fetch-branch")
     assert local_repo.get_heads_ref("fetch-branch") == remote_repo.get_heads_ref("fetch-branch")
 
     local_repo.run("git checkout main")
@@ -66,13 +66,10 @@ def test_pull():
     local_repo.run('git commit -m "Add pull_file"')
     local_repo.run("git push -u origin pull-branch")
     local_repo.run("git checkout main")
-
-    folder_items = local_repo.list_folder_items()
-    assert "pull_file" not in folder_items
+    assert "pull_file" not in local_repo.list_folder_items()
 
     local_repo.run("git pull origin pull-branch")
-    folder_items = local_repo.list_folder_items()
-    assert "pull_file" in folder_items
+    assert "pull_file" in local_repo.list_folder_items()
 
     pulled_file = File(local_repo.path / "pull_file")
     assert local_repo.get_file("pull_file") == pulled_file
