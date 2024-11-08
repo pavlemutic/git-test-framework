@@ -148,7 +148,7 @@ that missing part with automated tests. We should rather make a new plan for dee
 for catching bugs.
 
 ### System requirements for CI/CD
-This framework can be executed within Docker container, making is suitable to run on various system configurations.
+This framework can be executed within Docker container, making it suitable to run on various system configurations.
 
 It is mandatory to have Docker installed with access to the internet if building Docker images happens at the 
 time of the test execution. If Docker image is pre-built and kept on local hub / repo, internet access is not needed.
