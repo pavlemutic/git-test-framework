@@ -8,11 +8,11 @@
 - Local and Remote init tests
 - Clone test, submodule test, fetch test
 ### Changed
-- Moved main logic from Scenario to Repo
-- Improved readme file with info about framework and test stratefy
+- Moved the main logic from Scenario to Repo
+- Improved readme file with info about framework and test strategy
 ### Removed
 - init_repo folder with preinitialised local and remote repos
-- create_init_repo.sh as we don't need preinitialising repos anymore
+- create_init_repo.sh as we don't need preinitialising repos any more
 
 ## [Version 1.2.0] - 2024-11-06
 ### Added
@@ -22,8 +22,8 @@
 - Black lint
 - pyproject.toml for pytest and black config
 ### Changed
-- Response has() now differs regex strings from non-regex
-- Merge and diff test according to above change
+- Response has() now differs from regex strings from non-regex
+- Merge and diff test according to the above change
 ### Removed
 - pytest.ini, replaced with pyproject.toml
 
